@@ -4,9 +4,7 @@ import Items from '../components/items'
 
 export const Page = () => (
   <div>
-    <Items>
-
-    </Items>
+    <Items />
   </div>
 )
 

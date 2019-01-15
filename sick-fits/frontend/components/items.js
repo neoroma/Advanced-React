@@ -1,6 +1,13 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
+import styled from 'styled-components'
+
+const Center = styled.div`
+  background: brown;
+  color: navajowhite;
+  text-align: center;
+`;
 
 const ALL_ITEMS_QUERY = gql`
   query ALL_ITEMS_QUERY {
@@ -15,12 +22,20 @@ const ALL_ITEMS_QUERY = gql`
   }
 `
 
+const renderer = ({ data: { items = [] } }) => {
+  console.log(items)
+  return items.map((item) => <div key={item.id}>{`${item.title} + ${item.price}`}</div>)
+}
+
 export default class Items extends React.Component {
   render() {
     return (
-      <div>
+      <Center>
         <p>Items!</p>
-      </div>
+        <Query query={ALL_ITEMS_QUERY}>
+          {renderer}
+        </Query>
+      </Center>
     )
   }
 }
