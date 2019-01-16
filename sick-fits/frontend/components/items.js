@@ -23,7 +23,6 @@ const ALL_ITEMS_QUERY = gql`
 `
 
 const renderer = ({ data: { items = [] } }) => {
-  console.log(items)
   return items.map((item) => <div key={item.id}>{`${item.title} + ${item.price}`}</div>)
 }
 
