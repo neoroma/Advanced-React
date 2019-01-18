@@ -3,6 +3,7 @@ import { Mutation } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import router from 'next/router'
 import Form from './styles/Form'
+import styled from 'styled-components'
 
 export const ADD_ITEM = gql`
   mutation ADD_ITEM($data: ItemCreateInput!) {
@@ -15,6 +16,10 @@ export const ADD_ITEM = gql`
   }
 `
 
+const SmallImg = styled.img`
+  max-height: 50px;
+`
+
 class CreateItem extends React.Component {
 
   state = {
@@ -23,6 +28,7 @@ class CreateItem extends React.Component {
     description: '',
     image: '',
     largeImage: '',
+    uploading: false
   }
 
   handleChange = ({ target: { value, name, type } }) => {
@@ -31,8 +37,32 @@ class CreateItem extends React.Component {
     })
   }
 
+  uploadImage = async ({ target: { files } }) => {
+
+    this.setState({
+      uploading: true
+    })
+
+    const [image] = files
+    const data = new FormData()
+    data.append('file', image)
+    data.append('upload_preset', 'romanshe')
+
+    const res = await fetch('https://api.cloudinary.com/v1_1/do1nfbkwe/image/upload', {
+      method: 'post',
+      body: data
+    })
+
+    const { secure_url } = await res.json()
+
+    this.setState({
+      uploading: false,
+      image: secure_url
+    })
+  }
+
   render() {
-    const { title, price, description } = this.state
+    const { title, price, description, image, uploading } = this.state
     return (
       <Mutation mutation={ADD_ITEM} variables={{
         data: { title, price, description }
@@ -46,7 +76,7 @@ class CreateItem extends React.Component {
             })
           }}>
             <h2>Sell item</h2>
-            <fieldset disabled={loading} aria-busy={loading}>
+            <fieldset disabled={loading || uploading} aria-busy={loading || uploading}>
               <label htmlFor="title">
                 Title
                 <input
@@ -81,6 +111,17 @@ class CreateItem extends React.Component {
                   required
                   value={price}
                 />
+              </label>
+              <label htmlFor="image">
+                Image
+                <input
+                  type="file"
+                  id="image"
+                  name="image"
+                  placeholder="Upload image here"
+                  onChange={this.uploadImage}
+                />
+                {image && <SmallImg src={image} alt="Uploaded image" />}
               </label>
               <button type="submit">Submit</button>
             </fieldset>
