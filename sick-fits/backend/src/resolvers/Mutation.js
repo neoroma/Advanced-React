@@ -7,6 +7,11 @@ const mutations = {
     return item
 
   },
+  deleteItem: async (parent, { id }, { db }, info) => {
+    return db.mutation.deleteItem({
+      where: { id }
+    }, info)
+  },
   updateItem: async (parent, { id, data }, { db }, info) => {
     const { id: dupId, ...updates } = data
 
