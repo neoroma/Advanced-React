@@ -5,6 +5,8 @@ import router from 'next/router'
 import Form from './styles/Form'
 import styled from 'styled-components'
 
+const UPLOAD_URL = 'https://api.cloudinary.com/v1_1/do1nfbkwe/image/upload'
+
 export const ADD_ITEM = gql`
   mutation ADD_ITEM($data: ItemCreateInput!) {
     createItem(data: $data){
@@ -48,7 +50,7 @@ class CreateItem extends React.Component {
     data.append('file', image)
     data.append('upload_preset', 'romanshe')
 
-    const res = await fetch('https://api.cloudinary.com/v1_1/do1nfbkwe/image/upload', {
+    const res = await fetch(UPLOAD_URL, {
       method: 'post',
       body: data
     })
